@@ -24,14 +24,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-local-dev-key-12345')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # Vercel gives you a unique sub-domain, so we allow all .vercel.app domains
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.vercel.app',
-    '*' # Safest catch-all for initial deployment testing
-]
+ALLOWED_HOSTS = ['*'] # Safest catch-all for initial deployment testing]
 
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+
+# Allow all origins for testing to make sure the serverless functions initialize
+CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,7 +80,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER', 'avnadmin'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'defaultpassword'),
         'HOST': os.getenv('DB_HOST', 'mysql-1fe4af56-dhruthi-264f.j.aivencloud.com'),
-        'PORT': os.getenv('DB_PORT', '24618'),
+        'PORT': str(os.getenv('DB_PORT', '24618')),
     }
 }
 
