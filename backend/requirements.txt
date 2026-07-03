@@ -1,13 +1,8 @@
-asgiref==3.11.1
 Django==6.0.6
-django-cors-headers==4.9.0
 djangorestframework==3.17.1
-gunicorn==26.0.0
-
-packaging==26.2
-python-dotenv==1.2.2
-sqlparse==0.5.5
-tzdata==2026.2
-whitenoise==6.12.0
+django-cors-headers==4.9.0
 PyMySQL==1.1.1
 cryptography
+gunicorn==26.0.0
+whitenoise==6.12.0
+python-dotenv==1.2.2
