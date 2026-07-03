@@ -1,88 +1,146 @@
-import { useState } from 'react'
-import { FiActivity, FiPlus } from 'react-icons/fi'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
-import { Badge, Button, Card, Modal, Skeleton } from '../components/ui'
+import { useToast } from '../components/ui'
+import { DashboardHeader } from '../components/dashboard/DashboardHeader'
+import { StatsSection } from '../components/dashboard/StatsSection'
+import { DeleteConfirmModal } from '../components/tasks/DeleteConfirmModal'
+import { EmptyState } from '../components/tasks/EmptyState'
+import { ErrorState } from '../components/tasks/ErrorState'
+import { FilterBar, type TaskView } from '../components/tasks/FilterBar'
+import { TaskCard } from '../components/tasks/TaskCard'
+import { TaskFormModal } from '../components/tasks/TaskFormModal'
+import { TaskListSkeleton } from '../components/tasks/TaskListSkeleton'
+import { TaskTable } from '../components/tasks/TaskTable'
+import { staggerContainer } from '../animations/variants'
+import { useDebounce } from '../hooks/useDebounce'
 import { useTasks } from '../hooks/useTasks'
+import type { Priority, Status, Task, TaskInput } from '../types/task'
 
-/**
- * Milestone 5 page: verifies the architecture end-to-end (layout, primitives,
- * hook, API connectivity, loading/error states). The full dashboard UI is
- * built in the next milestone.
- */
 export function DashboardPage() {
-  const { tasks, stats, loading, error, refetch } = useTasks()
-  const [open, setOpen] = useState(false)
+  const { tasks, stats, loading, error, refetch, setQuery, createTask, updateTask, deleteTask } =
+    useTasks()
+  const toast = useToast()
+
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
+  const [status, setStatus] = useState('')
+  const [priority, setPriority] = useState('')
+  const [ordering, setOrdering] = useState('-created_at')
+  const [view, setView] = useState<TaskView>('table')
+
+  const [formOpen, setFormOpen] = useState(false)
+  const [editingTask, setEditingTask] = useState<Task | null>(null)
+  const [deletingTask, setDeletingTask] = useState<Task | null>(null)
+
+  useEffect(() => {
+    setQuery({
+      search: debouncedSearch || undefined,
+      status: (status || undefined) as Status | undefined,
+      priority: (priority || undefined) as Priority | undefined,
+      ordering,
+    })
+  }, [debouncedSearch, status, priority, ordering, setQuery])
+
+  const hasFilters = Boolean(debouncedSearch || status || priority)
+
+  function openCreate() {
+    setEditingTask(null)
+    setFormOpen(true)
+  }
+
+  function openEdit(task: Task) {
+    setEditingTask(task)
+    setFormOpen(true)
+  }
+
+  async function handleSubmit(input: TaskInput) {
+    if (editingTask) {
+      await updateTask(editingTask.id, input)
+      toast.push('success', 'Task updated')
+    } else {
+      await createTask(input)
+      toast.push('success', 'Task created')
+    }
+    setFormOpen(false)
+  }
+
+  async function handleDelete(task: Task) {
+    try {
+      await deleteTask(task.id)
+      toast.push('success', 'Task deleted')
+    } catch {
+      toast.push('error', 'Failed to delete task')
+    } finally {
+      setDeletingTask(null)
+    }
+  }
+
+  function clearFilters() {
+    setSearch('')
+    setStatus('')
+    setPriority('')
+    setOrdering('-created_at')
+  }
+
+  const cards = (
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+      className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      <AnimatePresence>
+        {tasks.map((task) => (
+          <TaskCard key={task.id} task={task} onEdit={openEdit} onDelete={setDeletingTask} />
+        ))}
+      </AnimatePresence>
+    </motion.div>
+  )
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Overview</h1>
-          <p className="text-sm text-slate-400">Architecture &amp; API connectivity check</p>
-        </div>
-        <Button onClick={() => setOpen(true)}>
-          <FiPlus /> New Task
-        </Button>
-      </div>
+      <DashboardHeader search={search} onSearchChange={setSearch} onAdd={openCreate} />
+      <StatsSection stats={stats} />
+      <FilterBar
+        status={status}
+        priority={priority}
+        ordering={ordering}
+        view={view}
+        onStatusChange={setStatus}
+        onPriorityChange={setPriority}
+        onOrderingChange={setOrdering}
+        onViewChange={setView}
+      />
 
-      {loading && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-        </div>
-      )}
-
-      {error && !loading && (
-        <Card className="p-6">
-          <p className="text-rose-300">{error}</p>
-          <Button variant="secondary" size="sm" className="mt-3" onClick={() => void refetch()}>
-            Retry
-          </Button>
-        </Card>
-      )}
-
-      {!loading && !error && (
+      {loading ? (
+        <TaskListSkeleton />
+      ) : error ? (
+        <ErrorState message={error} onRetry={refetch} />
+      ) : tasks.length === 0 ? (
+        <EmptyState filtered={hasFilters} onAdd={openCreate} onClear={clearFilters} />
+      ) : view === 'table' ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card interactive className="p-5">
-              <p className="text-sm text-slate-400">Total tasks</p>
-              <p className="mt-1 text-3xl font-bold text-white">{stats?.total ?? 0}</p>
-            </Card>
-            <Card interactive className="p-5">
-              <p className="text-sm text-slate-400">Completed</p>
-              <p className="mt-1 text-3xl font-bold text-white">{stats?.done ?? 0}</p>
-            </Card>
-            <Card interactive className="p-5">
-              <p className="text-sm text-slate-400">Completion</p>
-              <p className="mt-1 text-3xl font-bold text-white">{stats?.completion_rate ?? 0}%</p>
-            </Card>
+          <div className="hidden md:block">
+            <TaskTable tasks={tasks} onEdit={openEdit} onDelete={setDeletingTask} />
           </div>
-
-          <Card className="flex items-center gap-2 p-5 text-slate-300">
-            <FiActivity className="text-brand-400" />
-            <span className="text-sm">Connected to API — {tasks.length} task(s) loaded</span>
-            <Badge tone="emerald" className="ml-auto">
-              live
-            </Badge>
-          </Card>
+          <div className="md:hidden">{cards}</div>
         </>
+      ) : (
+        cards
       )}
 
-      <Modal open={open} onClose={() => setOpen(false)} title="New Task">
-        <p className="text-sm text-slate-400">
-          The full create / edit form arrives in the next milestone. The modal, buttons, and
-          form primitives are already wired and ready.
-        </p>
-        <div className="mt-5 flex justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button size="sm" onClick={() => setOpen(false)}>
-            Got it
-          </Button>
-        </div>
-      </Modal>
+      <TaskFormModal
+        open={formOpen}
+        task={editingTask}
+        onClose={() => setFormOpen(false)}
+        onSubmit={handleSubmit}
+      />
+      <DeleteConfirmModal
+        task={deletingTask}
+        onCancel={() => setDeletingTask(null)}
+        onConfirm={handleDelete}
+      />
     </div>
   )
 }

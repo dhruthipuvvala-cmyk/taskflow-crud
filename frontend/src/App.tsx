@@ -1,10 +1,13 @@
+import { ToastProvider } from './components/ui'
 import { AppLayout } from './layouts/AppLayout'
 import { DashboardPage } from './pages/DashboardPage'
 
 export default function App() {
   return (
-    <AppLayout>
-      <DashboardPage />
-    </AppLayout>
+    <ToastProvider>
+      <AppLayout>
+        <DashboardPage />
+      </AppLayout>
+    </ToastProvider>
   )
 }

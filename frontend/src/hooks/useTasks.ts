@@ -70,10 +70,17 @@ export function useTasks(initialQuery: TaskQuery = {}): UseTasksResult {
 
   const deleteTask = useCallback(
     async (id: number) => {
-      await api.deleteTask(id)
-      await load(query)
+      const previous = tasks
+      setTasks((list) => list.filter((task) => task.id !== id)) // optimistic
+      try {
+        await api.deleteTask(id)
+        await load(query)
+      } catch (err) {
+        setTasks(previous) // rollback
+        throw err
+      }
     },
-    [load, query],
+    [tasks, load, query],
   )
 
   return {
