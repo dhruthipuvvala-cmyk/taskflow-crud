@@ -27,7 +27,7 @@ export function DashboardPage() {
   const [status, setStatus] = useState('')
   const [priority, setPriority] = useState('')
   const [ordering, setOrdering] = useState('-created_at')
-  const [view, setView] = useState<TaskView>('table')
+  const [view, setView] = useState<TaskView>('cards')
 
   const [formOpen, setFormOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
@@ -88,9 +88,10 @@ export function DashboardPage() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
+      style={{ perspective: 1200 }}
       className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
     >
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {tasks.map((task) => (
           <TaskCard key={task.id} task={task} onEdit={openEdit} onDelete={setDeletingTask} />
         ))}
@@ -98,37 +99,47 @@ export function DashboardPage() {
     </motion.div>
   )
 
+  const content = loading ? (
+    <TaskListSkeleton />
+  ) : error ? (
+    <ErrorState message={error} onRetry={refetch} />
+  ) : tasks.length === 0 ? (
+    <EmptyState filtered={hasFilters} onAdd={openCreate} onClear={clearFilters} />
+  ) : view === 'table' ? (
+    <>
+      <div className="hidden md:block">
+        <TaskTable tasks={tasks} onEdit={openEdit} onDelete={setDeletingTask} />
+      </div>
+      <div className="md:hidden">{cards}</div>
+    </>
+  ) : (
+    cards
+  )
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <DashboardHeader search={search} onSearchChange={setSearch} onAdd={openCreate} />
       <StatsSection stats={stats} />
-      <FilterBar
-        status={status}
-        priority={priority}
-        ordering={ordering}
-        view={view}
-        onStatusChange={setStatus}
-        onPriorityChange={setPriority}
-        onOrderingChange={setOrdering}
-        onViewChange={setView}
-      />
 
-      {loading ? (
-        <TaskListSkeleton />
-      ) : error ? (
-        <ErrorState message={error} onRetry={refetch} />
-      ) : tasks.length === 0 ? (
-        <EmptyState filtered={hasFilters} onAdd={openCreate} onClear={clearFilters} />
-      ) : view === 'table' ? (
-        <>
-          <div className="hidden md:block">
-            <TaskTable tasks={tasks} onEdit={openEdit} onDelete={setDeletingTask} />
-          </div>
-          <div className="md:hidden">{cards}</div>
-        </>
-      ) : (
-        cards
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="space-y-4"
+      >
+        <FilterBar
+          status={status}
+          priority={priority}
+          ordering={ordering}
+          view={view}
+          onStatusChange={setStatus}
+          onPriorityChange={setPriority}
+          onOrderingChange={setOrdering}
+          onViewChange={setView}
+        />
+        {content}
+      </motion.div>
 
       <TaskFormModal
         open={formOpen}

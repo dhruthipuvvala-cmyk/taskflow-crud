@@ -19,6 +19,7 @@ export function StatsSection({ stats }: { stats: TaskStats | null }) {
       initial="hidden"
       animate="visible"
       className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
+      style={{ perspective: 1200 }}
     >
       <StatCard label="Total" value={stats?.total ?? 0} icon={FiList} accent="text-brand-300" />
       <StatCard label="To Do" value={stats?.todo ?? 0} icon={FiCircle} accent="text-slate-300" />
@@ -42,7 +43,8 @@ export function StatsSection({ stats }: { stats: TaskStats | null }) {
       />
       <StatCard
         label="Completion"
-        value={`${stats?.completion_rate ?? 0}%`}
+        value={stats?.completion_rate ?? 0}
+        suffix="%"
         icon={FiTrendingUp}
         accent="text-accent-400"
       />

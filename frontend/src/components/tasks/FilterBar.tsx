@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import { FiGrid, FiList } from 'react-icons/fi'
 
 import { Select } from '../ui'
 import { cn } from '../../utils/cn'
-import {
-  ORDERING_OPTIONS,
-  PRIORITY_OPTIONS,
-  STATUS_OPTIONS,
-} from '../../utils/taskMeta'
+import { spring } from '../../animations/variants'
+import { ORDERING_OPTIONS, PRIORITY_OPTIONS, STATUS_OPTIONS } from '../../utils/taskMeta'
 
 export type TaskView = 'cards' | 'table'
 
@@ -72,19 +70,15 @@ export function FilterBar({
       </div>
 
       <div className="hidden items-center gap-1 rounded-xl border border-white/10 bg-surface-900/60 p-1 md:flex">
+        <ViewToggle active={view === 'cards'} label="Card view" onClick={() => onViewChange('cards')}>
+          <FiGrid size={16} />
+        </ViewToggle>
         <ViewToggle
           active={view === 'table'}
           label="Table view"
           onClick={() => onViewChange('table')}
         >
           <FiList size={16} />
-        </ViewToggle>
-        <ViewToggle
-          active={view === 'cards'}
-          label="Card view"
-          onClick={() => onViewChange('cards')}
-        >
-          <FiGrid size={16} />
         </ViewToggle>
       </div>
     </div>
@@ -108,12 +102,18 @@ function ViewToggle({
       onClick={onClick}
       aria-label={label}
       aria-pressed={active}
-      className={cn(
-        'rounded-lg p-1.5 transition-colors',
-        active ? 'bg-brand-600 text-white' : 'text-slate-400 hover:text-white',
-      )}
+      className="relative rounded-lg p-1.5"
     >
-      {children}
+      {active && (
+        <motion.span
+          layoutId="viewToggle"
+          transition={spring}
+          className="absolute inset-0 rounded-lg bg-brand-600"
+        />
+      )}
+      <span className={cn('relative z-10 block', active ? 'text-white' : 'text-slate-400')}>
+        {children}
+      </span>
     </button>
   )
 }
