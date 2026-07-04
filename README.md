@@ -4,7 +4,7 @@ A production-quality **CRUD task manager** built with **React + Django REST Fram
 It offers a premium, dark-glassmorphism dashboard for creating, tracking, filtering, and
 completing tasks.
 
-> **Author:** Dhruthi Puvvala
+> **Author:** Akshaya Puvvala
 > **Stack:** React 19 · TypeScript · Tailwind CSS v4 · Framer Motion · Django 6 · DRF · MySQL
 
 ![TaskFlow dashboard](docs/screenshot.png)

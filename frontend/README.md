@@ -2,6 +2,8 @@
 
 React 19 + TypeScript + Vite + Tailwind CSS v4 + Framer Motion single-page app for TaskFlow.
 
+> **Author:** Akshaya Puvvala
+
 See the [project README](../README.md) for full setup, environment variables, and deployment.
 
 ## Quick start
