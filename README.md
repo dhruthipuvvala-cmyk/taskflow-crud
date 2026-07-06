@@ -84,11 +84,13 @@ task-crud/
 
 ## Screenshots
 
-| Dashboard |
-|-----------|
-| ![Dashboard](docs/screenshot.png) |
+| Landing hero | Dashboard |
+|--------------|-----------|
+| ![Landing](docs/landing.png) | ![Dashboard](docs/screenshot.png) |
 
-_(Replace or add more screenshots — e.g. the create/edit modal and mobile card view — under `docs/`.)_
+_(Add more screenshots — e.g. the create/edit modal and mobile card view — under `docs/`.)_
+
+The app opens on a cinematic landing hero; **Enter Dashboard** transitions into the workspace.
 
 ---
 
