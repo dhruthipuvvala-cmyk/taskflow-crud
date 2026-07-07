@@ -18,8 +18,7 @@ export function StatsSection({ stats }: { stats: TaskStats | null }) {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
-      style={{ perspective: 1200 }}
+      className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
     >
       <StatCard label="Total" value={stats?.total ?? 0} icon={FiList} accent="text-brand-300" />
       <StatCard label="To Do" value={stats?.todo ?? 0} icon={FiCircle} accent="text-slate-300" />

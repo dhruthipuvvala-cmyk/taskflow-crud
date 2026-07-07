@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import type { IconType } from 'react-icons'
 
-import { AnimatedNumber, TiltCard } from '../ui'
+import { AnimatedNumber, SpotlightCard } from '../ui'
 import { itemVariants } from '../../animations/variants'
 import { cn } from '../../utils/cn'
 
@@ -22,17 +22,15 @@ export function StatCard({
 }: StatCardProps) {
   return (
     <motion.div variants={itemVariants}>
-      <TiltCard className="p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
-            {label}
-          </p>
-          <Icon className={cn('text-base', accent)} />
+      <SpotlightCard className="p-5">
+        <div className="flex items-center gap-2 text-slate-400">
+          <Icon className={cn('text-sm', accent)} />
+          <span className="text-[11px] font-medium uppercase tracking-[0.16em]">{label}</span>
         </div>
-        <p className="mt-3 text-3xl font-semibold tabular-nums text-white">
+        <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums text-white">
           <AnimatedNumber value={value} suffix={suffix} />
         </p>
-      </TiltCard>
+      </SpotlightCard>
     </motion.div>
   )
 }

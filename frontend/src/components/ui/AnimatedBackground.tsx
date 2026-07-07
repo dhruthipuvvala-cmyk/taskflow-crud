@@ -1,61 +1,52 @@
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 
-const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
-  id: i,
-  left: (i * 61) % 100,
-  size: 1 + (i % 3),
-  delay: (i % 6) * 0.7,
-  duration: 10 + (i % 5) * 2,
-  drift: 18 + (i % 4) * 12,
-}))
+const VIDEO_SRC =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_094145_4a271a6c-3869-4f1c-8aa7-aeb0cb227994.mp4'
 
-/** Fixed, non-interactive backdrop: aurora blobs + parallax + particles + noise. */
+/**
+ * Cinematic ambient backdrop shared with the landing hero: the same footage,
+ * deeply blurred and darkened so the dashboard lives in the same world.
+ * Falls back to a static gradient when reduced motion is preferred.
+ */
 export function AnimatedBackground() {
   const reduce = useReducedMotion()
   const { scrollY } = useScroll()
-  const y = useTransform(scrollY, [0, 900], [0, 80])
+  const y = useTransform(scrollY, [0, 1200], [0, 120])
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-surface-950" />
-
-      <motion.div style={reduce ? undefined : { y }} className="absolute inset-0">
-        <div className="aurora aurora-1" />
-        <div className="aurora aurora-2" />
-        <div className="aurora aurora-3" />
-      </motion.div>
-
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-black">
       {!reduce && (
-        <div className="absolute inset-0">
-          {PARTICLES.map((particle) => (
-            <motion.span
-              key={particle.id}
-              className="absolute rounded-full bg-white/40"
-              style={{
-                left: `${particle.left}%`,
-                bottom: -12,
-                width: particle.size,
-                height: particle.size,
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.55, 0], y: [0, -620], x: [0, particle.drift, 0] }}
-              transition={{
-                duration: particle.duration,
-                delay: particle.delay,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-        </div>
+        <motion.video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          style={{ y }}
+          className="absolute left-0 top-0 h-[118%] w-full scale-110 object-cover opacity-40 blur-[52px]"
+        >
+          <source src={VIDEO_SRC} type="video/mp4" />
+        </motion.video>
       )}
 
-      <div className="noise absolute inset-0 opacity-[0.035]" />
+      {/* Readability wash */}
+      <div className="absolute inset-0 bg-black/72" />
+
+      {/* Cool brand glow at the top */}
+      <div
+        className="absolute inset-x-0 top-0 h-[45vh]"
+        style={{ background: 'radial-gradient(60% 100% at 50% 0%, rgba(99,102,241,0.14), transparent 70%)' }}
+      />
+      {/* Warm glow at the bottom — echoes the landing sunset */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[42vh]"
+        style={{ background: 'radial-gradient(65% 100% at 50% 100%, rgba(244,120,100,0.07), transparent 72%)' }}
+      />
+
+      <div className="noise absolute inset-0 opacity-[0.03]" />
       <div
         className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(130% 120% at 50% -10%, transparent 45%, rgba(0,0,0,0.55))',
-        }}
+        style={{ background: 'radial-gradient(130% 120% at 50% -10%, transparent 55%, rgba(0,0,0,0.62))' }}
       />
     </div>
   )

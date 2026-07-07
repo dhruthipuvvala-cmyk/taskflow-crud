@@ -88,8 +88,7 @@ export function DashboardPage() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      style={{ perspective: 1200 }}
-      className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       <AnimatePresence mode="popLayout">
         {tasks.map((task) => (
@@ -117,7 +116,7 @@ export function DashboardPage() {
   )
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <DashboardHeader search={search} onSearchChange={setSearch} onAdd={openCreate} />
       <StatsSection stats={stats} />
 
@@ -126,7 +125,7 @@ export function DashboardPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="space-y-4"
+        className="space-y-6"
       >
         <FilterBar
           status={status}

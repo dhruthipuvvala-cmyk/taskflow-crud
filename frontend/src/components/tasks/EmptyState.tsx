@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { FiInbox, FiPlus } from 'react-icons/fi'
 
 import { Button } from '../ui'
@@ -10,29 +11,37 @@ interface EmptyStateProps {
 
 export function EmptyState({ filtered, onAdd, onClear }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 px-6 py-16 text-center">
-      <span className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-white/5 text-slate-400">
-        <FiInbox size={26} />
-      </span>
-      <h3 className="text-lg font-semibold text-white">
-        {filtered ? 'No matching tasks' : 'No tasks yet'}
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="premium-card flex flex-col items-center justify-center px-6 py-20 text-center sm:py-24"
+    >
+      <div className="relative mb-6">
+        <div className="absolute inset-0 -z-10 rounded-full bg-brand-500/20 blur-2xl" />
+        <span className="grid h-16 w-16 place-items-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-300">
+          <FiInbox size={26} />
+        </span>
+      </div>
+      <h3 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+        {filtered ? 'No matching tasks' : 'A clean slate'}
       </h3>
-      <p className="mt-1 max-w-sm text-sm text-slate-400">
+      <p className="mt-2 max-w-sm text-sm leading-relaxed text-slate-400">
         {filtered
-          ? 'Try adjusting your search or filters.'
-          : 'Create your first task to get started.'}
+          ? 'Nothing matches these filters yet. Try adjusting your search or filters.'
+          : 'Your workspace is ready. Create your first task and start building momentum.'}
       </p>
-      <div className="mt-5">
+      <div className="mt-7">
         {filtered ? (
           <Button variant="secondary" size="sm" onClick={onClear}>
             Clear filters
           </Button>
         ) : (
-          <Button size="sm" onClick={onAdd}>
-            <FiPlus /> Add Task
+          <Button size="md" onClick={onAdd}>
+            <FiPlus /> Create your first task
           </Button>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
