@@ -4,24 +4,22 @@ import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring 
 import { cn } from '../../utils/cn'
 import { spring } from '../../animations/variants'
 
-interface SpotlightCardProps {
+interface SpotlightProps {
   children: ReactNode
   className?: string
   onClick?: () => void
+  lift?: number
 }
 
-/**
- * Premium glass card with a soft cursor-following spotlight and a subtle lift.
- * Restrained (no 3D tilt) — the tasteful Vercel/Linear hover.
- */
-export function SpotlightCard({ children, className, onClick }: SpotlightCardProps) {
+/** Glass `.card` with a warm cursor-following spotlight and a subtle lift. */
+export function Spotlight({ children, className, onClick, lift = -4 }: SpotlightProps) {
   const ref = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
   const mx = useMotionValue(50)
   const my = useMotionValue(50)
   const sx = useSpring(mx, { stiffness: 140, damping: 22 })
   const sy = useSpring(my, { stiffness: 140, damping: 22 })
-  const glow = useMotionTemplate`radial-gradient(320px circle at ${sx}% ${sy}%, rgba(255,255,255,0.07), transparent 60%)`
+  const glow = useMotionTemplate`radial-gradient(300px circle at ${sx}% ${sy}%, rgba(255,196,140,0.12), transparent 60%)`
 
   function handleMove(event: MouseEvent<HTMLDivElement>) {
     const rect = ref.current?.getBoundingClientRect()
@@ -35,9 +33,9 @@ export function SpotlightCard({ children, className, onClick }: SpotlightCardPro
       ref={ref}
       onMouseMove={reduce ? undefined : handleMove}
       onClick={onClick}
-      whileHover={reduce ? undefined : { y: -3 }}
+      whileHover={reduce ? undefined : { y: lift }}
       transition={spring}
-      className={cn('premium-card group relative overflow-hidden', className)}
+      className={cn('card group relative overflow-hidden', className)}
     >
       {!reduce && (
         <motion.span

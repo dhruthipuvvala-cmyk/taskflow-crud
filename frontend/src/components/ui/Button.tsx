@@ -9,11 +9,11 @@ type Size = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'text-white shadow-[0_8px_30px_-8px_rgba(79,70,229,0.6)] bg-gradient-to-b from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500',
+    'text-ink-950 font-semibold shadow-[0_10px_34px_-8px_rgba(255,111,91,0.6)] bg-gradient-to-b from-amber-300 to-coral-500 hover:from-amber-300 hover:to-amber-400',
   secondary: 'glass text-slate-100 hover:border-white/15',
   ghost: 'text-slate-300 hover:text-white hover:bg-white/5',
   danger:
-    'text-white shadow-[0_8px_30px_-8px_rgba(225,29,72,0.6)] bg-gradient-to-b from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500',
+    'text-white font-semibold shadow-[0_10px_34px_-8px_rgba(224,72,60,0.6)] bg-gradient-to-b from-coral-500 to-ember-600 hover:from-coral-500 hover:to-coral-500',
 }
 
 const SIZES: Record<Size, string> = {
@@ -63,7 +63,7 @@ export function Button({
       transition={spring}
       style={{ x: sx, y: sy }}
       className={cn(
-        'relative inline-flex items-center justify-center rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/60 disabled:pointer-events-none disabled:opacity-50',
+        'relative inline-flex items-center justify-center rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 disabled:pointer-events-none disabled:opacity-50',
         VARIANTS[variant],
         SIZES[size],
         className,

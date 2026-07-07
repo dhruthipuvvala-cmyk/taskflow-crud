@@ -3,8 +3,7 @@ import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 
 import { ToastProvider } from './components/ui'
 import { LandingPage } from './components/landing/LandingPage'
-import { AppLayout } from './layouts/AppLayout'
-import { DashboardPage } from './pages/DashboardPage'
+import { Console } from './pages/Console'
 
 export default function App() {
   const [entered, setEntered] = useState<boolean>(() => {
@@ -30,9 +29,7 @@ export default function App() {
         {entered ? (
           <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <ToastProvider>
-              <AppLayout>
-                <DashboardPage />
-              </AppLayout>
+              <Console />
             </ToastProvider>
           </motion.div>
         ) : (

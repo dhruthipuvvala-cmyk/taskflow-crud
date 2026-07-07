@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { IoClose } from 'react-icons/io5'
 
-import { backdropVariants, modalVariants } from '../../animations/variants'
+import { backdropVariants, sheetVariants } from '../../animations/variants'
 
 export interface ModalProps {
   open: boolean
@@ -45,8 +45,6 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
 
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
-
-    // Move focus into the dialog unless a field (e.g. autoFocus input) already has it.
     const focusTimer = window.setTimeout(() => {
       const panel = panelRef.current
       if (panel && !panel.contains(document.activeElement)) panel.focus()
@@ -64,7 +62,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
@@ -74,8 +72,8 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
           <motion.div
             ref={panelRef}
             tabIndex={-1}
-            className="glass-strong relative w-full max-w-lg rounded-2xl p-6 shadow-2xl focus:outline-none"
-            variants={modalVariants}
+            className="glass-strong relative w-full max-w-lg rounded-3xl p-6 focus:outline-none"
+            variants={sheetVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -85,7 +83,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
             aria-labelledby={title ? titleId : undefined}
           >
             <div className="mb-5 flex items-center justify-between">
-              <h2 id={titleId} className="text-lg font-semibold text-white">
+              <h2 id={titleId} className="text-lg font-semibold tracking-tight text-white">
                 {title}
               </h2>
               <button

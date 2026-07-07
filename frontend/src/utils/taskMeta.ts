@@ -9,13 +9,13 @@ export interface MetaEntry {
 export const STATUS_META: Record<Status, MetaEntry> = {
   [STATUS.TODO]: { label: 'To Do', tone: 'slate' },
   [STATUS.IN_PROGRESS]: { label: 'In Progress', tone: 'amber' },
-  [STATUS.DONE]: { label: 'Done', tone: 'emerald' },
+  [STATUS.DONE]: { label: 'Done', tone: 'teal' },
 }
 
 export const PRIORITY_META: Record<Priority, MetaEntry> = {
-  [PRIORITY.LOW]: { label: 'Low', tone: 'cyan' },
-  [PRIORITY.MEDIUM]: { label: 'Medium', tone: 'indigo' },
-  [PRIORITY.HIGH]: { label: 'High', tone: 'rose' },
+  [PRIORITY.LOW]: { label: 'Low', tone: 'slate' },
+  [PRIORITY.MEDIUM]: { label: 'Medium', tone: 'amber' },
+  [PRIORITY.HIGH]: { label: 'High', tone: 'ember' },
 }
 
 export const STATUS_OPTIONS: { value: string; label: string }[] = [
