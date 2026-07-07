@@ -1,26 +1,36 @@
 import { motion } from 'framer-motion'
 import { FiAlertTriangle, FiInbox, FiPlus } from 'react-icons/fi'
 
-import { Button } from '../ui'
+import { Button, Spinner } from '../ui'
 import { EASE } from '../../animations/variants'
 
-export function BoardSkeleton() {
+export function BoardSkeleton({ waking = false }: { waking?: boolean }) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {[0, 1, 2].map((col) => (
-        <div key={col} className="rounded-3xl border border-white/[0.05] bg-white/[0.015] p-3">
-          <div className="mb-3 h-4 w-24 rounded bg-white/[0.06]" />
-          <div className="flex flex-col gap-3">
-            {Array.from({ length: col === 1 ? 3 : 2 }).map((_, i) => (
-              <div key={i} className="card shimmer p-4">
-                <div className="h-4 w-2/3 rounded bg-white/[0.06]" />
-                <div className="mt-3 h-3 w-full rounded bg-white/[0.04]" />
-                <div className="mt-2 h-3 w-4/5 rounded bg-white/[0.04]" />
-              </div>
-            ))}
+    <div className="space-y-5">
+      <div className="flex items-center gap-2.5 px-1 text-sm text-slate-400" role="status" aria-live="polite">
+        <Spinner />
+        <span>
+          {waking
+            ? 'Waking up the server. This usually takes less than a minute…'
+            : 'Connecting to your workspace…'}
+        </span>
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {[0, 1, 2].map((col) => (
+          <div key={col} className="rounded-3xl border border-white/[0.05] bg-white/[0.015] p-3">
+            <div className="mb-3 h-4 w-24 rounded bg-white/[0.06]" />
+            <div className="flex flex-col gap-3">
+              {Array.from({ length: col === 1 ? 3 : 2 }).map((_, i) => (
+                <div key={i} className="card shimmer p-4">
+                  <div className="h-4 w-2/3 rounded bg-white/[0.06]" />
+                  <div className="mt-3 h-3 w-full rounded bg-white/[0.04]" />
+                  <div className="mt-2 h-3 w-4/5 rounded bg-white/[0.04]" />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

@@ -10,8 +10,8 @@ import type {
 const RESOURCE = 'tasks/'
 
 /** GET /tasks/ — returns the (unwrapped) list, honoring search/filter/sort. */
-export async function listTasks(query: TaskQuery = {}): Promise<Task[]> {
-  const { data } = await client.get<Paginated<Task>>(RESOURCE, { params: query })
+export async function listTasks(query: TaskQuery = {}, signal?: AbortSignal): Promise<Task[]> {
+  const { data } = await client.get<Paginated<Task>>(RESOURCE, { params: query, signal })
   return data.results
 }
 
@@ -34,10 +34,7 @@ export async function updateTask(id: number, input: TaskInput): Promise<Task> {
 }
 
 /** PATCH /tasks/:id/ (partial update) */
-export async function patchTask(
-  id: number,
-  partial: Partial<TaskInput>,
-): Promise<Task> {
+export async function patchTask(id: number, partial: Partial<TaskInput>): Promise<Task> {
   const { data } = await client.patch<Task>(`${RESOURCE}${id}/`, partial)
   return data
 }
@@ -48,7 +45,7 @@ export async function deleteTask(id: number): Promise<void> {
 }
 
 /** GET /tasks/stats/ */
-export async function getStats(): Promise<TaskStats> {
-  const { data } = await client.get<TaskStats>(`${RESOURCE}stats/`)
+export async function getStats(signal?: AbortSignal): Promise<TaskStats> {
+  const { data } = await client.get<TaskStats>(`${RESOURCE}stats/`, { signal })
   return data
 }

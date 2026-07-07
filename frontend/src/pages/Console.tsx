@@ -14,7 +14,7 @@ import { useTasks } from '../hooks/useTasks'
 import type { Priority, Task, TaskInput } from '../types/task'
 
 export function Console() {
-  const { tasks, stats, loading, error, refetch, setQuery, createTask, updateTask, deleteTask } =
+  const { tasks, stats, loading, waking, error, refetch, setQuery, createTask, updateTask, deleteTask } =
     useTasks()
   const toast = useToast()
 
@@ -96,7 +96,7 @@ export function Console() {
         <Pulse stats={stats} onCreate={openCreate} onOpenCommand={() => setPaletteOpen(true)} />
 
         {loading ? (
-          <BoardSkeleton />
+          <BoardSkeleton waking={waking} />
         ) : error ? (
           <BoardError message={error} onRetry={refetch} />
         ) : tasks.length === 0 ? (
